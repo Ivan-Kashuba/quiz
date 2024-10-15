@@ -11,10 +11,10 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "@/ui",
+    "utils": "@/shared/lib/shadcn/utils",
+    "ui": "@/ui",
+    "lib": "@/shared/lib/shadcn",
+    "hooks": "@shared/hooks/shadcn"
   }
 }
