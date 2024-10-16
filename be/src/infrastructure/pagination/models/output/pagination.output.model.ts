@@ -1,20 +1,28 @@
-import { IsArray } from 'class-validator';
 import { PaginationInputModel } from '../input/pagination.input.model';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray } from 'class-validator';
 
 export class PaginationOutputModel<T> {
+  @ApiProperty({ isArray: true })
   @IsArray()
-  data: T[];
+  readonly data: T[];
 
+  @ApiProperty({ default: 1 })
   readonly page: number;
 
+  @ApiProperty({ default: 10 })
   readonly limit: number;
 
+  @ApiProperty()
   readonly totalCount: number;
 
+  @ApiProperty()
   readonly pageCount: number;
 
+  @ApiProperty()
   readonly hasPreviousPage: boolean;
 
+  @ApiProperty()
   readonly hasNextPage: boolean;
 
   constructor(
