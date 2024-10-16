@@ -30,7 +30,24 @@ import { isUUID } from 'class-validator';
 import { PaginationInputModel } from '../../../infrastructure/pagination/models/input/pagination.input.model';
 import { AdminAuthGuard } from '../../../infrastructure/guards/admin-auth.guard';
 import { PaginationOutputModel } from '../../../infrastructure/pagination/models/output/pagination.output.model';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ApiPaginatedResponse } from '../../../infrastructure/pagination/decorators/api-paginated-response/ApiPaginatedResponse ';
+import {
+  ApiDefaultNoContentResponse,
+  ApiDefaultNotFoundResponse,
+  ApiDefaultUnauthorizedResponse,
+} from '../../../infrastructure/decorators/swagger/default-responses';
 
+@ApiSecurity('basic')
+@ApiDefaultUnauthorizedResponse()
+@ApiTags('Questions management')
 @Controller('sa')
 export class QuestionsController {
   constructor(
@@ -40,6 +57,10 @@ export class QuestionsController {
 
   @Get('questions')
   @UseGuards(AdminAuthGuard)
+  @ApiBadRequestResponse({
+    description: 'Invalid query params',
+  })
+  @ApiPaginatedResponse(QuestionOutputModel)
   async getQuizQuestions(
     @Query()
     queryParams: {
@@ -61,6 +82,10 @@ export class QuestionsController {
   @Post('questions')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AdminAuthGuard)
+  @ApiCreatedResponse({
+    type: QuestionOutputModel,
+    description: 'Created successfully',
+  })
   async createQuestion(
     @Body() quizQuestionInputModel: QuestionInputModel,
   ): Promise<QuestionOutputModel> {
@@ -78,6 +103,8 @@ export class QuestionsController {
   @Delete('questions/:questionId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AdminAuthGuard)
+  @ApiNotFoundResponse({ description: 'Not found' })
+  @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
   async deleteQuestion(@Param('questionId') questionId: string) {
     if (!isUUID(questionId)) {
       throw new NotFoundException();
@@ -107,8 +134,10 @@ export class QuestionsController {
   }
 
   @Put('questions/:questionId')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AdminAuthGuard)
+  @ApiDefaultNotFoundResponse()
+  @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
+  @ApiOkResponse({ type: QuestionOutputModel })
   async updateQuestion(
     @Body() quizQuestionInputModel: QuestionInputModel,
     @Param('questionId', ParseUUIDPipe) questionId: string,
@@ -133,13 +162,18 @@ export class QuestionsController {
     question.answers = newAnswers;
     question.body = body;
     await question.save();
+
+    return QuestionOutputModelMapper(question);
   }
 
   @Put('questions/:questionId/publish')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AdminAuthGuard)
+  @ApiDefaultNoContentResponse()
+  @ApiDefaultNotFoundResponse()
+  @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
   async changeQuestionPublishing(
-    @Body() quizQuestionInputModel: UpdateQuestionPublishStatusModel,
+    @Body() updateQuestionPublishStatusModel: UpdateQuestionPublishStatusModel,
     @Param('questionId', ParseUUIDPipe) questionId: string,
   ) {
     const question = await Question.findOne({
@@ -151,7 +185,7 @@ export class QuestionsController {
       throw new NotFoundException();
     }
 
-    const { published } = quizQuestionInputModel;
+    const { published } = updateQuestionPublishStatusModel;
 
     question.published = published;
 

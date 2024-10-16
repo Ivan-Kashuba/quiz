@@ -1,21 +1,20 @@
-import { getMetadataArgsStorage } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import { TClass } from '../../types';
 
+@Injectable()
 export class TypeOrmHelper {
-  static validateFieldInEntity(entityClass: TClass, field: string) {
-    const columns = getMetadataArgsStorage().columns;
+  constructor(private dataSource: DataSource) {}
 
-    // TODO Implement logic of finding entity field
-    // const isOrderByExists = columns.some(
-    //   (column) =>
-    //     column.target === entityClass && column.propertyName === field,
-    // );
+  validateFieldInEntity(EntityClass: TClass, field: string): string | null {
+    const keys = this.dataSource.getMetadata(EntityClass).propertiesMap;
 
-    const isOrderByExists = true;
+    const isOrderByExists = Object.keys(keys).some((key) => key === field);
 
     if (!isOrderByExists) {
-      throw new BadRequestException(`${field} field is incorrect`);
+      return null;
     }
+
+    return field;
   }
 }

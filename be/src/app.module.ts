@@ -11,6 +11,7 @@ import { QuizQueryRepository } from './features/questions/infrastructure/quiz-qu
 import { Question } from './features/questions/domain/Question';
 import { Answer } from './features/questions/domain/Answer';
 import { CreateQuizQuestionHandler } from './features/questions/application/use-cases/create-quiz-question.handler';
+import { TypeOrmHelper } from './infrastructure/helpers/typeorm/typeorm-helper';
 
 @Module({
   imports: [
@@ -23,6 +24,11 @@ import { CreateQuizQuestionHandler } from './features/questions/application/use-
     TypeOrmModule.forFeature([Question, Answer]),
   ],
   controllers: [AppController, QuestionsController],
-  providers: [AppService, QuizQueryRepository, CreateQuizQuestionHandler],
+  providers: [
+    AppService,
+    QuizQueryRepository,
+    CreateQuizQuestionHandler,
+    TypeOrmHelper,
+  ],
 })
 export class AppModule {}

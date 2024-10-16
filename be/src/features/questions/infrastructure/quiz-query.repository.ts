@@ -9,14 +9,19 @@ import { TypeOrmHelper } from '../../../infrastructure/helpers/typeorm/typeorm-h
 
 @Injectable()
 export class QuizQueryRepository {
+  constructor(private readonly typeOrmHelper: TypeOrmHelper) {}
+
   async findQuestions(
     bodySearchTerm: string | null,
     publishedStatus: string | null,
     pagination: PaginationInputModel,
   ): Promise<PaginationOutputModel<QuestionOutputModel>> {
-    const { order, skip, limit, orderBy } = pagination;
+    const { order, skip, limit } = pagination;
 
-    TypeOrmHelper.validateFieldInEntity(Question, orderBy);
+    const validatedOrderBy = this.typeOrmHelper.validateFieldInEntity(
+      Question,
+      pagination.orderBy,
+    );
 
     let filters = {};
 
@@ -30,7 +35,7 @@ export class QuizQueryRepository {
 
     const [dbQuizQuestions, total] = await Question.findAndCount({
       where: { ...filters, isActive: true },
-      order: { [orderBy]: order },
+      order: { [validatedOrderBy || 'createdAt']: order },
       relations: { answers: true },
       take: limit,
       skip: skip,
