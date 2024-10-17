@@ -1,29 +1,11 @@
-import { useState } from 'react';
-import { Button } from '@/ui/button.tsx';
-import { Calendar } from '@/ui/calendar.tsx';
+import { AppRouter } from '@/app/routes';
+import { Toaster } from '@/ui/toaster.tsx';
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export function App() {
   return (
-    <div className="min-h-screen min-w-screen">
-      <Button>Click me</Button>
-      <Calendar />
-      <div className="text-red-900 font-bold text-2xl">!@312QSdqsd</div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <>
+      <AppRouter />
+      <Toaster />
+    </>
   );
 }
-
-export default App;

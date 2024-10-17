@@ -10,6 +10,8 @@ const APP_PREFIX = '/api';
 export const applyAppSettings = (app: INestApplication) => {
   setAppPrefix(app);
 
+  app.enableCors();
+
   setSwagger(app);
 
   setAppPipes(app);
