@@ -1,28 +1,16 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { LoginPage } from '@/pages/LoginPage.tsx';
-import { PrivateRoute } from '@/app/routes/PrivateRoute.tsx';
-import { NotAuthOnlyRoute } from '@/app/routes/AuthOnlyRouter.tsx';
+import { AdminApplication } from '@/modules/Admin/ui/AdminApplication.tsx';
+import { HomePage } from '@/pages/HomePage.tsx';
 
 const router = createBrowserRouter([
-  {
-    path: '/login',
-    element: (
-      <NotAuthOnlyRoute>
-        <LoginPage />
-      </NotAuthOnlyRoute>
-    ),
-  },
+  { path: '', element: <HomePage /> },
   {
     path: '/about',
     element: <div>About</div>,
   },
   {
-    path: '/secure',
-    element: (
-      <PrivateRoute>
-        <div>Secure</div>
-      </PrivateRoute>
-    ),
+    path: '/admin/*',
+    element: <AdminApplication />,
   },
 ]);
 

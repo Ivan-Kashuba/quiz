@@ -12,8 +12,9 @@ import { Label } from '@/ui/label';
 import { http } from '@/shared/lib/axios/http.ts';
 import { useForm } from 'react-hook-form';
 import { LocalStorageKey } from '@/shared/lib/localstorage';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useToast } from '@/shared/hooks/shadcn/use-toast.ts';
+import { useAuthState } from 'react-admin';
 
 interface LoginForm {
   username: string;
@@ -29,13 +30,14 @@ export const LoginPage = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { authenticated } = useAuthState();
 
   const onLogin = async ({ username, password }: LoginForm) => {
     try {
       const { data } = await http.post('sa/auth/login', { username, password });
 
       localStorage.setItem(LocalStorageKey.accessToken, data.accessToken);
-      navigate('/secure');
+      navigate('/admin');
     } catch {
       toast({
         variant: 'destructive',
@@ -44,8 +46,12 @@ export const LoginPage = () => {
     }
   };
 
+  if (authenticated) {
+    return <Navigate to="/admin" />;
+  }
+
   return (
-    <div className="w-screen h-screen  flex items-center justify-center">
+    <div className="w-screen h-screen flex items-center justify-center">
       <form onSubmit={handleSubmit(onLogin)}>
         <Card className="w-[350px]">
           <CardHeader>
@@ -71,6 +77,7 @@ export const LoginPage = () => {
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
                 <Input
+                  type="password"
                   id="password"
                   {...register('password', {
                     required: 'Password is required',

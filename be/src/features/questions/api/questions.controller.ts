@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -35,6 +36,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiParam,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
@@ -44,6 +46,7 @@ import {
   ApiDefaultNotFoundResponse,
   ApiDefaultUnauthorizedResponse,
 } from '../../../infrastructure/decorators/swagger/default-responses';
+import { DataSource, In } from 'typeorm';
 
 @ApiSecurity('basic')
 @ApiDefaultUnauthorizedResponse()
@@ -53,6 +56,7 @@ export class QuestionsController {
   constructor(
     private readonly quizQueryRepository: QuizQueryRepository,
     private readonly commandBus: CommandBus,
+    private readonly dataSource: DataSource,
   ) {}
 
   @Get('questions')
@@ -77,6 +81,29 @@ export class QuestionsController {
       publishedStatus,
       paginationInputModel,
     );
+  }
+
+  @Get('questions/:questionId')
+  @UseGuards(AdminAuthGuard)
+  @ApiParam({ name: 'questionId' })
+  @ApiDefaultNotFoundResponse()
+  @ApiBadRequestResponse({
+    description: 'Invalid param questionId',
+  })
+  @ApiOkResponse({ type: QuestionOutputModel })
+  async getQuizById(
+    @Param('questionId', ParseUUIDPipe) questionId: string,
+  ): Promise<QuestionOutputModel> {
+    const question = await Question.findOne({
+      where: { id: questionId },
+      relations: { answers: true },
+    });
+
+    if (!question) {
+      throw new NotFoundException();
+    }
+
+    return QuestionOutputModelMapper(question);
   }
 
   @Post('questions')
@@ -105,11 +132,7 @@ export class QuestionsController {
   @UseGuards(AdminAuthGuard)
   @ApiNotFoundResponse({ description: 'Not found' })
   @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
-  async deleteQuestion(@Param('questionId') questionId: string) {
-    if (!isUUID(questionId)) {
-      throw new NotFoundException();
-    }
-
+  async deleteQuestion(@Param('questionId', ParseUUIDPipe) questionId: string) {
     const question = await Question.findOne({
       where: { id: questionId, isActive: true },
       relations: {
@@ -131,6 +154,41 @@ export class QuestionsController {
     question.isActive = false;
     question.answers = deletedAnswers;
     await question.save();
+  }
+
+  @Delete('questions')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AdminAuthGuard)
+  @ApiNotFoundResponse({ description: 'At least one id was not found' })
+  @ApiBadRequestResponse({
+    description: 'At least one entity has wrong format id',
+  })
+  async deleteQuestions(@Query('ids') questionIds: string) {
+    const idsArray = questionIds.split(',');
+    const isIdsValid = idsArray.every((id: string) => isUUID(id));
+
+    if (!isIdsValid) {
+      throw new BadRequestException('Invalid UUID format.');
+    }
+
+    const questions = await Question.find({
+      where: { id: In(idsArray) },
+      relations: { answers: true },
+    });
+
+    if (questions.length !== idsArray.length) {
+      throw new BadRequestException('Some questions were not found.');
+    }
+
+    await this.dataSource.transaction(async (entityManager) => {
+      const deletedQuestions = questions.map((question) => ({
+        ...question,
+        isActive: false,
+        answers: question.answers.map((a) => ({ ...a, isActive: false })),
+      }));
+
+      await entityManager.save(Question, deletedQuestions);
+    });
   }
 
   @Put('questions/:questionId')
