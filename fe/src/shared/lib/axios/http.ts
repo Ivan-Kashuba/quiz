@@ -32,8 +32,16 @@ http.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem(LocalStorageKey.accessToken);
 
-      if (!error.config.url.includes('login')) {
+      const isAdminLoginRequest = error.config.url.includes('login');
+      const isUserLoginRequest = error.config.url.includes('users/check');
+      const isUserPage = !window.location.href.includes('admin');
+
+      if (!isAdminLoginRequest && !isUserPage) {
         window.location.href = '/admin/login';
+      }
+
+      if (!isUserLoginRequest && isUserPage) {
+        window.location.href = '/authorize';
       }
     }
 

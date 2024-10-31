@@ -12,7 +12,7 @@ import {
 } from '../../../infrastructure/config/env-config';
 
 @ApiTags('Auth')
-@Controller('sa/auth')
+@Controller('sa/player-initializing')
 export class AuthController {
   @Post('login')
   @ApiOkResponse({

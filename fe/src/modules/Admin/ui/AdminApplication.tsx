@@ -5,6 +5,10 @@ import { authProvider } from '@/shared/lib/auth-provider/auth-provider.ts';
 import { LoginPage } from '@/pages/LoginPage.tsx';
 import { QuestionCreate } from '@/entities/Question/ui/QuestionCreate.tsx';
 import { QuestionEdit } from '@/entities/Question/ui/QuestionEdit.tsx';
+import { UsersList } from '@/entities/User/ui/UsersList.tsx';
+import { UserCreate } from '@/entities/User/ui/UserCreate.tsx';
+import { LucideFileQuestion, UserIcon } from 'lucide-react';
+import { createStyledIcon } from '@/modules/Admin/utils/icons.tsx';
 
 export const AdminApplication = () => {
   return (
@@ -23,6 +27,16 @@ export const AdminApplication = () => {
         create={QuestionCreate}
         hasEdit
         hasCreate
+        icon={createStyledIcon(LucideFileQuestion, 'questions')}
+      />
+
+      <Resource
+        name="users"
+        list={UsersList}
+        create={UserCreate}
+        hasCreate
+        hasEdit={false}
+        icon={createStyledIcon(UserIcon, 'users')}
       />
     </Admin>
   );

@@ -13,6 +13,7 @@ import {
   useRedirect,
 } from 'react-admin';
 import { TQuestion } from '@/entities/Question/types/question.ts';
+import { noOnlySpaces } from '@/shared/validation/validation.ts';
 
 type TQuestionEditForm = {
   body: string;
@@ -62,7 +63,7 @@ export const QuestionEdit = () => {
           name="body"
           source="body"
           label="Question"
-          validate={[required(), minLength(10), maxLength(500)]}
+          validate={[required(), minLength(10), maxLength(500), noOnlySpaces]}
         />
 
         <ArrayInput
@@ -72,7 +73,11 @@ export const QuestionEdit = () => {
           validate={required()}
         >
           <SimpleFormIterator>
-            <TextInput validate={required()} source="answer" label="Answer" />
+            <TextInput
+              validate={(required(), noOnlySpaces)}
+              source="answer"
+              label="Answer"
+            />
           </SimpleFormIterator>
         </ArrayInput>
       </SimpleForm>

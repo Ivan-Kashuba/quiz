@@ -15,6 +15,7 @@ import { TypeOrmHelper } from './infrastructure/helpers/typeorm/typeorm-helper';
 import { AuthController } from './features/auth/api/auth.controller';
 import { UsersController } from './features/users/api/users.controller';
 import { User } from './features/users/api/domain/User';
+import { UsersQueryRepository } from './features/users/api/infrastructure/users.query.repository';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { User } from './features/users/api/domain/User';
   providers: [
     AppService,
     QuizQueryRepository,
+    UsersQueryRepository,
     CreateQuizQuestionHandler,
     TypeOrmHelper,
   ],

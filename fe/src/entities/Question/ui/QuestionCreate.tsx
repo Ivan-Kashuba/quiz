@@ -12,6 +12,7 @@ import {
 } from 'react-admin';
 import { dataProvider } from '@/modules/Admin/api/data-provider.ts';
 import { FieldValues, SubmitHandler } from 'react-hook-form';
+import { noOnlySpaces } from '@/shared/validation/validation.ts';
 
 type TQuestionCreateForm = {
   body: string;
@@ -50,7 +51,7 @@ export const QuestionCreate = () => {
           name="body"
           source="body"
           label="Question"
-          validate={[required(), minLength(10), maxLength(500)]}
+          validate={[required(), minLength(10), maxLength(500), noOnlySpaces]}
         />
         <ArrayInput
           name="correctAnswers"
@@ -60,7 +61,11 @@ export const QuestionCreate = () => {
           defaultValue={[{ answer: '' }]}
         >
           <SimpleFormIterator>
-            <TextInput validate={required()} source="answer" label="Answer" />
+            <TextInput
+              validate={(required(), noOnlySpaces)}
+              source="answer"
+              label="Answer"
+            />
           </SimpleFormIterator>
         </ArrayInput>
       </SimpleForm>

@@ -3,18 +3,26 @@ import { http } from '@/shared/lib/axios/http.ts';
 import { WithPagination } from '@/shared/types/pagination.ts';
 import { TQuestion } from '@/entities/Question/types/question.ts';
 
+const getApiPrefix = (resource: string) =>
+  resource === 'questions' ? 'sa' : '';
+
 export const dataProvider: DataProvider = {
   getList: async (resource, params) => {
+    const apiPrefix = getApiPrefix(resource);
+
     const { pagination, sort } = params;
 
-    const response = await http.get<WithPagination<any>>(`sa/${resource}`, {
-      params: {
-        order: sort?.order,
-        orderBy: sort?.field,
-        pageNumber: pagination?.page,
-        limit: pagination?.perPage,
-      },
-    });
+    const response = await http.get<WithPagination<any>>(
+      `${apiPrefix}/${resource}`,
+      {
+        params: {
+          order: sort?.order,
+          orderBy: sort?.field,
+          pageNumber: pagination?.page,
+          limit: pagination?.perPage,
+        },
+      }
+    );
 
     return {
       data: response.data.data,
@@ -23,21 +31,32 @@ export const dataProvider: DataProvider = {
   },
 
   getOne: async (resource, params) => {
-    const response = await http.get(`sa/${resource}/${params.id}`);
+    const apiPrefix = getApiPrefix(resource);
+
+    const response = await http.get(`${apiPrefix}/${resource}/${params.id}`);
     return { data: response.data };
   },
 
   create: async (resource, params) => {
-    const response = await http.post(`sa/${resource}`, params.data);
+    const apiPrefix = getApiPrefix(resource);
+
+    const response = await http.post(`${apiPrefix}/${resource}`, params.data);
 
     return { data: response.data };
   },
+
   update: async (resource, params) => {
-    const response = await http.put(`sa/${resource}/${params.id}`, params.data);
+    const apiPrefix = getApiPrefix(resource);
+    const response = await http.put(
+      `${apiPrefix}/${resource}/${params.id}`,
+      params.data
+    );
     return { data: { id: params.id, ...response.data } };
   },
+
   delete: async (resource, params) => {
-    const response = await http.delete(`sa/${resource}/${params.id}`);
+    const apiPrefix = getApiPrefix(resource);
+    const response = await http.delete(`${apiPrefix}/${resource}/${params.id}`);
 
     return { data: response.data };
   },
@@ -49,7 +68,8 @@ export const dataProvider: DataProvider = {
   },
 
   async deleteMany(resource, params) {
-    await http.delete(`sa/${resource}?ids=${params.ids}`);
+    const apiPrefix = getApiPrefix(resource);
+    await http.delete(`${apiPrefix}/${resource}?ids=${params.ids}`);
 
     return { data: params.ids };
   },

@@ -15,6 +15,7 @@ import { LocalStorageKey } from '@/shared/lib/localstorage';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useToast } from '@/shared/hooks/shadcn/use-toast.ts';
 import { useAuthState } from 'react-admin';
+import { FormError } from '@/ui/form-error.tsx';
 
 interface LoginForm {
   username: string;
@@ -68,11 +69,7 @@ export const LoginPage = () => {
                     required: 'Username is required',
                   })}
                 />
-                {errors.username && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.username.message}
-                  </p>
-                )}
+                <FormError errors={errors} name="username" />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
@@ -83,11 +80,7 @@ export const LoginPage = () => {
                     required: 'Password is required',
                   })}
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password.message}
-                  </p>
-                )}
+                <FormError errors={errors} name="password" />
               </div>
             </div>
           </CardContent>

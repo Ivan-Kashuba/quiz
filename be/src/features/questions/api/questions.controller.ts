@@ -37,6 +37,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
@@ -47,6 +48,7 @@ import {
   ApiDefaultUnauthorizedResponse,
 } from '../../../infrastructure/decorators/swagger/default-responses';
 import { DataSource, In } from 'typeorm';
+import { getAndValidateIds } from '../../../infrastructure/helpers/delete-entities/delete-entities';
 
 @ApiSecurity('basic')
 @ApiDefaultUnauthorizedResponse()
@@ -61,6 +63,18 @@ export class QuestionsController {
 
   @Get('questions')
   @UseGuards(AdminAuthGuard)
+  @ApiQuery({
+    name: 'publishedStatus',
+    type: Boolean,
+    required: false,
+    description: 'Search by publish status',
+  })
+  @ApiQuery({
+    name: 'bodySearchTerm',
+    type: String,
+    required: false,
+    description: 'Search by body',
+  })
   @ApiBadRequestResponse({
     description: 'Invalid query params',
   })
@@ -164,15 +178,10 @@ export class QuestionsController {
     description: 'At least one entity has wrong format id',
   })
   async deleteQuestions(@Query('ids') questionIds: string) {
-    const idsArray = questionIds.split(',');
-    const isIdsValid = idsArray.every((id: string) => isUUID(id));
-
-    if (!isIdsValid) {
-      throw new BadRequestException('Invalid UUID format.');
-    }
+    const idsArray = getAndValidateIds(questionIds);
 
     const questions = await Question.find({
-      where: { id: In(idsArray) },
+      where: { id: In(idsArray), isActive: true },
       relations: { answers: true },
     });
 

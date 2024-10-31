@@ -1,3 +1,5 @@
 export enum LocalStorageKey {
-  'accessToken' = 'accessToken',
+  accessToken = 'accessToken',
+  currentPlayer = 'currentPlayer',
+  isFirstPlayerCreating = 'isFirstPlayerCreating',
 }
