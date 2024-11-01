@@ -21,7 +21,7 @@ import {
   QuestionOutputModel,
   QuestionOutputModelMapper,
 } from './models/output/question.output.model';
-import { QuizQueryRepository } from '../infrastructure/quiz-query.repository';
+import { QuestionsQueryRepository } from '../infrastructure/questions-query.repository';
 import { QuestionInputModel } from './models/input/create-question.input.model';
 import { CreateQuizQuestionCommand } from '../application/use-cases/create-quiz-question.handler';
 import { Question } from '../domain/Question';
@@ -56,7 +56,7 @@ import { getAndValidateIds } from '../../../infrastructure/helpers/delete-entiti
 @Controller('sa')
 export class QuestionsController {
   constructor(
-    private readonly quizQueryRepository: QuizQueryRepository,
+    private readonly quizQueryRepository: QuestionsQueryRepository,
     private readonly commandBus: CommandBus,
     private readonly dataSource: DataSource,
   ) {}

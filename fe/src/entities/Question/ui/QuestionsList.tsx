@@ -64,7 +64,10 @@ export const QuestionList = () => {
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
   return (
-    <List exporter={questionsExporter}>
+    <List
+      exporter={questionsExporter}
+      sort={{ field: 'createdAt', order: 'ASC' }}
+    >
       {isSmall ? (
         <SimpleList
           primaryText={(question: TQuestion) => question.body}

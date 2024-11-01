@@ -8,7 +8,7 @@ import { PaginationOutputModel } from '../../../infrastructure/pagination/models
 import { TypeOrmHelper } from '../../../infrastructure/helpers/typeorm/typeorm-helper';
 
 @Injectable()
-export class QuizQueryRepository {
+export class QuestionsQueryRepository {
   constructor(private readonly typeOrmHelper: TypeOrmHelper) {}
 
   async findQuestions(
