@@ -69,8 +69,6 @@ export class UsersController {
   ): Promise<PaginationOutputModel<UserOutputModel>> {
     const usernameSearchTerm = queryParams?.usernameSearchTerm || null;
 
-    console.log('paginationInputModel:', paginationInputModel);
-
     return await this.usersQueryRepository.findQuestions(
       usernameSearchTerm,
       paginationInputModel,

@@ -1,16 +1,19 @@
 import {
   BooleanField,
+  BooleanInput,
   Datagrid,
   DateField,
   EditButton,
   FunctionField,
   List,
+  SimpleList,
   TextField,
+  TextInput,
   useDataProvider,
   useNotify,
   useRefresh,
-  SimpleList,
 } from 'react-admin';
+
 import { TQuestion } from '@/entities/Question/types/question.ts';
 import { exporter } from '@/shared/lib/exporter/exporter.ts';
 import { Block, CheckCircle } from '@mui/icons-material';
@@ -63,10 +66,20 @@ const PublishButton = (question: TQuestion) => {
 export const QuestionList = () => {
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
+  const filters = [
+    <TextInput label="Search" source="search" alwaysOn />,
+    <BooleanInput
+      label="Published"
+      defaultValue={false}
+      source="publishedStatus"
+    />,
+  ];
+
   return (
     <List
       exporter={questionsExporter}
       sort={{ field: 'createdAt', order: 'ASC' }}
+      filters={filters}
     >
       {isSmall ? (
         <SimpleList

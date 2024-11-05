@@ -1,4 +1,11 @@
-import { Datagrid, DateField, List, SimpleList, TextField } from 'react-admin';
+import {
+  Datagrid,
+  DateField,
+  List,
+  SimpleList,
+  TextField,
+  TextInput,
+} from 'react-admin';
 import { exporter } from '@/shared/lib/exporter/exporter.ts';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { TUser } from '@/entities/User/types/user.ts';
@@ -10,10 +17,13 @@ const questionsExporter = (users: TUser[]) => {
 export const UsersList = () => {
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
+  const filters = [<TextInput label="Search" source="search" alwaysOn />];
+
   return (
     <List
       exporter={questionsExporter}
       sort={{ field: 'createdAt', order: 'ASC' }}
+      filters={filters}
     >
       {isSmall ? (
         <SimpleList

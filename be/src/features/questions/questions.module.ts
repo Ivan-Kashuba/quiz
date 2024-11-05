@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { QuestionsController } from './api/questions.controller';
-import { QuestionsQueryRepository } from './infrastructure/questions-query.repository';
+import { QuestionsQueryRepository } from './infrastructure/questions.query.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from './domain/Question';
 import { Answer } from './domain/Answer';

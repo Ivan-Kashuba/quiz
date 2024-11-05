@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { Question } from '../domain/Question';
-import { Like } from 'typeorm';
 import { QuestionOutputModel } from '../api/models/output/question.output.model';
 import { PaginationInputModel } from '../../../infrastructure/pagination/models/input/pagination.input.model';
 import { PaginationOutputModel } from '../../../infrastructure/pagination/models/output/pagination.output.model';
@@ -23,23 +22,26 @@ export class QuestionsQueryRepository {
       pagination.orderBy,
     );
 
-    let filters = {};
+    const query = Question.createQueryBuilder('q')
+      .where('q.isActive = :isActive', { isActive: true })
+      .orderBy(`q.${validatedOrderBy || 'createdAt'}`, order)
+      .take(limit)
+      .skip(skip)
+      .leftJoinAndSelect('q.answers', 'a');
 
     if (bodySearchTerm) {
-      filters = { body: Like('%' + bodySearchTerm + '%') };
+      query.andWhere('LOWER(q.body) LIKE :body', {
+        body: `%${bodySearchTerm.toLowerCase()}%`,
+      });
     }
 
-    if (publishedStatus) {
-      filters = { ...filters, published: publishedStatus };
+    if (publishedStatus !== null) {
+      query.andWhere('q.published = :published', {
+        published: publishedStatus,
+      });
     }
 
-    const [dbQuizQuestions, total] = await Question.findAndCount({
-      where: { ...filters, isActive: true },
-      order: { [validatedOrderBy || 'createdAt']: order },
-      relations: { answers: true },
-      take: limit,
-      skip: skip,
-    });
+    const [dbQuizQuestions, total] = await query.getManyAndCount();
 
     const viewModelFoundedQuestions: QuestionOutputModel[] =
       dbQuizQuestions.map((question) => {

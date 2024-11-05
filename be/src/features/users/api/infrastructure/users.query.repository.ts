@@ -25,18 +25,19 @@ export class UsersQueryRepository {
       pagination.orderBy,
     );
 
-    let filters = {};
+    const query = User.createQueryBuilder('u')
+      .where('u.isActive = :isActive', { isActive: true })
+      .orderBy(`u.${validatedOrderBy || 'createdAt'}`, order)
+      .take(limit)
+      .skip(skip);
 
     if (usernameSearchTerm) {
-      filters = { username: Like('%' + usernameSearchTerm + '%') };
+      query.andWhere('LOWER(u.username) LIKE :username', {
+        username: `%${usernameSearchTerm.toLowerCase()}%`,
+      });
     }
 
-    const [dbUsers, total] = await User.findAndCount({
-      where: { ...filters, isActive: true },
-      order: { [validatedOrderBy || 'createdAt']: order },
-      take: limit,
-      skip: skip,
-    });
+    const [dbUsers, total] = await query.getManyAndCount();
 
     const viewModelUsers: UserOutputModel[] = dbUsers.map(
       UserOutputModelMapper,

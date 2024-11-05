@@ -21,13 +21,12 @@ import {
   QuestionOutputModel,
   QuestionOutputModelMapper,
 } from './models/output/question.output.model';
-import { QuestionsQueryRepository } from '../infrastructure/questions-query.repository';
+import { QuestionsQueryRepository } from '../infrastructure/questions.query.repository';
 import { QuestionInputModel } from './models/input/create-question.input.model';
 import { CreateQuizQuestionCommand } from '../application/use-cases/create-quiz-question.handler';
 import { Question } from '../domain/Question';
 import { Answer } from '../domain/Answer';
 import { UpdateQuestionPublishStatusModel } from './models/input/update-question-publish-status.input.model';
-import { isUUID } from 'class-validator';
 import { PaginationInputModel } from '../../../infrastructure/pagination/models/input/pagination.input.model';
 import { AdminAuthGuard } from '../../../infrastructure/guards/admin-auth.guard';
 import { PaginationOutputModel } from '../../../infrastructure/pagination/models/output/pagination.output.model';
@@ -56,7 +55,7 @@ import { getAndValidateIds } from '../../../infrastructure/helpers/delete-entiti
 @Controller('sa')
 export class QuestionsController {
   constructor(
-    private readonly quizQueryRepository: QuestionsQueryRepository,
+    private readonly questionsQueryRepository: QuestionsQueryRepository,
     private readonly commandBus: CommandBus,
     private readonly dataSource: DataSource,
   ) {}
@@ -88,9 +87,12 @@ export class QuestionsController {
     @Query() paginationInputModel: PaginationInputModel,
   ): Promise<PaginationOutputModel<QuestionOutputModel>> {
     const bodySearchTerm = queryParams?.bodySearchTerm || null;
-    const publishedStatus = queryParams?.publishedStatus || null;
+    const publishedStatus =
+      queryParams?.publishedStatus !== undefined
+        ? queryParams?.publishedStatus
+        : null;
 
-    return await this.quizQueryRepository.findQuestions(
+    return await this.questionsQueryRepository.findQuestions(
       bodySearchTerm,
       publishedStatus,
       paginationInputModel,

@@ -20,6 +20,9 @@ export const dataProvider: DataProvider = {
           orderBy: sort?.field,
           pageNumber: pagination?.page,
           limit: pagination?.perPage,
+          bodySearchTerm: params.filter.search,
+          usernameSearchTerm: params.filter.search,
+          publishedStatus: params.filter.publishedStatus,
         },
       }
     );
