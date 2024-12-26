@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { Answer } from './Answer';
 import { AbstractBaseEntity } from '../../../infrastructure/base/base.entity';
+import { GameQuestion } from '../../quiz-game/domain/GameQuestion';
 
 @Entity({ name: 'Question' })
 export class Question extends AbstractBaseEntity {
@@ -14,4 +15,7 @@ export class Question extends AbstractBaseEntity {
 
   @OneToMany(() => Answer, (answer) => answer.question, { cascade: true })
   answers: Answer[];
+
+  @OneToOne(() => GameQuestion, (gameQuestion) => gameQuestion.question)
+  gameQuestion: GameQuestion;
 }
