@@ -24,6 +24,6 @@ export class PlayerProgress extends AbstractBaseEntity {
   @Column({ type: 'uuid' })
   gameId: string;
 
-  @OneToMany(() => GameAnswer, (gameAnswer) => gameAnswer.gameQuestion)
+  @OneToMany(() => GameAnswer, (gameAnswer) => gameAnswer.playerProgress)
   gameAnswers: GameAnswer[];
 }

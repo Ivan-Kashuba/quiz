@@ -1,19 +1,26 @@
 import {
+  Body,
   Controller,
+  ForbiddenException,
   Get,
   NotFoundException,
+  Param,
+  ParseUUIDPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
 
 import { CommandBus } from '@nestjs/cqrs';
 import {
+  ApiBadRequestResponse,
+  ApiBody,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  ApiDefaultBadRequestResponse,
   ApiDefaultNotFoundResponse,
   ApiDefaultUnauthorizedResponse,
 } from '../../../infrastructure/decorators/swagger/default-responses';
@@ -22,6 +29,10 @@ import { UserAuthGuard } from '../../../infrastructure/guards/user-auth.guard';
 import { ConnectToQuizCommand } from '../application/use-cases/connect-to-the-quiz-game.handler';
 import { UserTokenInfo } from '../../../infrastructure/decorators/transform/user-token-info';
 import { QuizGameQueryRepository } from '../infrastructure/quiz-game.query.repository';
+import { QuestionAnswerOutputModel } from './models/output/question-answer.output.model';
+import { QuestionGameAnswerInputModel } from './models/input/question-answer.input.model';
+import { AnswerStatus } from '../domain/enums/AnswerStatus';
+import { AnswerNextQuizQuestionCommand } from '../application/use-cases/answer-next-quiz-question.handler';
 
 @ApiDefaultUnauthorizedResponse()
 @ApiTags('Quiz Pair Game')
@@ -63,5 +74,53 @@ export class QuizPairGameController {
     const gameId = await this.commandBus.execute(createQuizQuestionCommand);
 
     return await this.quizGameQueryRepository.findQuizGameById(gameId);
+  }
+
+  @Get('pairs/:gameId')
+  @ApiOkResponse({ type: GameOutputModel })
+  @ApiNotFoundResponse({ description: 'No game by id' })
+  @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
+  @ApiForbiddenResponse({
+    description: 'If user was not participated in the game',
+  })
+  async getQuizGameById(
+    @Param('gameId', ParseUUIDPipe) gameId: string,
+    @UserTokenInfo('userId') userId: string,
+  ): Promise<GameOutputModel> {
+    const game = await this.quizGameQueryRepository.findQuizGameById(gameId);
+
+    if (!game) throw new NotFoundException();
+
+    const isOwnGame = [
+      game?.firstPlayerProgress?.player?.id,
+      game?.secondPlayerProgress?.player?.id,
+    ].includes(userId);
+
+    if (!isOwnGame) throw new ForbiddenException();
+
+    return game;
+  }
+
+  @Post('pairs/my-current/answers')
+  @ApiOkResponse({ type: QuestionAnswerOutputModel })
+  @ApiForbiddenResponse({
+    description: 'No active game or next question',
+  })
+  @ApiDefaultBadRequestResponse()
+  async answerOnNextGameQuestion(
+    @UserTokenInfo('userId') userId: string,
+    @Body() body: QuestionGameAnswerInputModel,
+  ): Promise<QuestionAnswerOutputModel> {
+    const answerOnNextGameQuestionCommand = new AnswerNextQuizQuestionCommand({
+      userId,
+      answer: body.answer,
+    });
+    await this.commandBus.execute(answerOnNextGameQuestionCommand);
+
+    return {
+      questionId: '123',
+      answerStatus: AnswerStatus.Correct,
+      addedAt: new Date().toISOString(),
+    };
   }
 }

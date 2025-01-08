@@ -87,7 +87,13 @@ export class ConnectToQuizHandler
           throw new NotFoundException('There is no questions in the list');
         }
 
-        const gameQuestions = GameQuestion.create(randomQuestionsForQuiz);
+        const gameQuestions = randomQuestionsForQuiz.map((q) => {
+          return GameQuestion.create({
+            body: q.body,
+            questionId: q.id,
+          });
+        });
+
         await entityManager.save(gameQuestions);
 
         const newGame = QuizGame.create({

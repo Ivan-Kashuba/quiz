@@ -21,7 +21,7 @@ export class QuizGameQueryRepository {
     return GameOutputModelMapper(currentGame);
   }
 
-  async findQuizGameById(quizGameId: string): Promise<GameOutputModel> {
+  async findQuizGameById(quizGameId: string): Promise<GameOutputModel | null> {
     if (!quizGameId) throw new Error('No gameId');
 
     const dbGame = await QuizGame.findOne({
@@ -31,6 +31,8 @@ export class QuizGameQueryRepository {
         gameQuestions: true,
       },
     });
+
+    if (!dbGame) return null;
 
     return GameOutputModelMapper(dbGame);
   }

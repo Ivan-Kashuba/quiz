@@ -7,6 +7,7 @@ import { GameQuestion } from './domain/GameQuestion';
 import { PlayerProgress } from './domain/PlayerGameProgress';
 import { QuizGame } from './domain/QuizGame';
 import { QuizGameQueryRepository } from './infrastructure/quiz-game.query.repository';
+import { AnswerNextQuizQuestionHandler } from './application/use-cases/answer-next-quiz-question.handler';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { QuizGameQueryRepository } from './infrastructure/quiz-game.query.reposi
     ]),
   ],
   controllers: [QuizPairGameController],
-  providers: [ConnectToQuizHandler, QuizGameQueryRepository],
+  providers: [
+    ConnectToQuizHandler,
+    AnswerNextQuizQuestionHandler,
+    QuizGameQueryRepository,
+  ],
 })
 export class QuizGameModule {}
