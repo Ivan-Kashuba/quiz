@@ -4,6 +4,11 @@ import {
   GameOutputModelMapper,
 } from '../api/models/output/game.output.model';
 import { QuizGame } from '../domain/QuizGame';
+import {
+  GameAnswerOutputModel,
+  mapGameAnswerOutputModel,
+} from '../api/models/output/game-answer.output.model';
+import { GameAnswer } from '../domain/GameAnswer';
 
 @Injectable()
 export class QuizGameQueryRepository {
@@ -13,6 +18,7 @@ export class QuizGameQueryRepository {
       .leftJoinAndSelect('quizGame.playersProgress', 'playersProgress')
       .leftJoinAndSelect('playersProgress.playerAccount', 'playerAccount')
       .leftJoinAndSelect('playersProgress.gameAnswers', 'gameAnswers')
+      .leftJoinAndSelect('gameAnswers.gameQuestion', 'gameQuestion')
       .where('playersProgress.isActive = :isActive', { isActive: true })
       .andWhere('playerAccount.id = :userId', { userId })
       .andWhere('quizGame.finishGameDate IS NULL')
@@ -27,7 +33,10 @@ export class QuizGameQueryRepository {
     const dbGame = await QuizGame.findOne({
       where: { id: quizGameId, isActive: true },
       relations: {
-        playersProgress: { playerAccount: true, gameAnswers: true },
+        playersProgress: {
+          playerAccount: true,
+          gameAnswers: { gameQuestion: true },
+        },
         gameQuestions: true,
       },
     });
@@ -35,5 +44,21 @@ export class QuizGameQueryRepository {
     if (!dbGame) return null;
 
     return GameOutputModelMapper(dbGame);
+  }
+  async findGameAnswerById(
+    answerId: string,
+  ): Promise<GameAnswerOutputModel | null> {
+    if (!answerId) throw new Error('No answerId');
+
+    const dbGame = await GameAnswer.findOne({
+      where: { id: answerId, isActive: true },
+      relations: {
+        gameQuestion: true,
+      },
+    });
+
+    if (!dbGame) return null;
+
+    return mapGameAnswerOutputModel(dbGame);
   }
 }

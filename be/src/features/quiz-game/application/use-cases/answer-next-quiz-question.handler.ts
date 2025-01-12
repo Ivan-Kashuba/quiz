@@ -61,6 +61,8 @@ export class AnswerNextQuizQuestionHandler
     if (currentQuestionNumber > 4)
       throw new ForbiddenException('No questions left');
 
+    let answerId = null;
+
     await this.dataSource.transaction(async (entityManager) => {
       const currentGameQuestion =
         currentGame.gameQuestions[currentQuestionNumber];
@@ -75,6 +77,10 @@ export class AnswerNextQuizQuestionHandler
       });
 
       await entityManager.save(newAnswer);
+
+      answerId = newAnswer.id;
     });
+
+    return answerId;
   }
 }

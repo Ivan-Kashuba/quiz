@@ -13,7 +13,6 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import {
   ApiBadRequestResponse,
-  ApiBody,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -31,8 +30,8 @@ import { UserTokenInfo } from '../../../infrastructure/decorators/transform/user
 import { QuizGameQueryRepository } from '../infrastructure/quiz-game.query.repository';
 import { QuestionAnswerOutputModel } from './models/output/question-answer.output.model';
 import { QuestionGameAnswerInputModel } from './models/input/question-answer.input.model';
-import { AnswerStatus } from '../domain/enums/AnswerStatus';
 import { AnswerNextQuizQuestionCommand } from '../application/use-cases/answer-next-quiz-question.handler';
+import { GameAnswerOutputModel } from './models/output/game-answer.output.model';
 
 @ApiDefaultUnauthorizedResponse()
 @ApiTags('Quiz Pair Game')
@@ -110,17 +109,16 @@ export class QuizPairGameController {
   async answerOnNextGameQuestion(
     @UserTokenInfo('userId') userId: string,
     @Body() body: QuestionGameAnswerInputModel,
-  ): Promise<QuestionAnswerOutputModel> {
+  ): Promise<GameAnswerOutputModel> {
     const answerOnNextGameQuestionCommand = new AnswerNextQuizQuestionCommand({
       userId,
       answer: body.answer,
     });
-    await this.commandBus.execute(answerOnNextGameQuestionCommand);
 
-    return {
-      questionId: '123',
-      answerStatus: AnswerStatus.Correct,
-      addedAt: new Date().toISOString(),
-    };
+    const answerId = await this.commandBus.execute(
+      answerOnNextGameQuestionCommand,
+    );
+
+    return this.quizGameQueryRepository.findGameAnswerById(answerId);
   }
 }

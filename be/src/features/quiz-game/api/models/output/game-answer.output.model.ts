@@ -21,6 +21,6 @@ export const mapGameAnswerOutputModel = (
     answerStatus: dbGameAnswer.isCorrect
       ? AnswerStatus.Correct
       : AnswerStatus.Incorrect,
-    questionId: dbGameAnswer.gameQuestion.id,
+    questionId: dbGameAnswer.gameQuestion?.id,
   };
 };
