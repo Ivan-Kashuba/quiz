@@ -21,8 +21,7 @@ export class GameAnswer extends AbstractBaseEntity {
   @Column()
   isCorrect: boolean;
 
-  @OneToOne(() => GameQuestion, (gameQuestion) => gameQuestion.gameAnswer)
-  @JoinColumn({ name: 'gameQuestionId' })
+  @ManyToOne(() => GameQuestion, (gameQuestion) => gameQuestion.gameAnswers)
   gameQuestion: GameQuestion;
 
   @ManyToOne(

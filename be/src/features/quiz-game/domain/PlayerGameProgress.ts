@@ -10,6 +10,13 @@ import { User } from '../../users/api/domain/User';
 import { QuizGame } from './QuizGame';
 import { GameAnswer } from './GameAnswer';
 
+export enum PlayerGameResult {
+  Loose = 0,
+  Win = 1,
+  Draw = 2,
+  Unfinished = 3,
+}
+
 @Entity({ name: 'PlayerProgress' })
 export class PlayerProgress extends AbstractBaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -23,6 +30,16 @@ export class PlayerProgress extends AbstractBaseEntity {
 
   @Column({ type: 'uuid' })
   gameId: string;
+
+  @Column({
+    type: 'enum',
+    enum: PlayerGameResult,
+    default: PlayerGameResult.Unfinished,
+  })
+  gameResult: PlayerGameResult;
+
+  @Column({ type: 'smallint', default: 0 })
+  points: number;
 
   @OneToMany(() => GameAnswer, (gameAnswer) => gameAnswer.playerProgress)
   gameAnswers: GameAnswer[];

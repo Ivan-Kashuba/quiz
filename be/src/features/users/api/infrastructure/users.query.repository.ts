@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
-import { Like } from 'typeorm';
 import { TypeOrmHelper } from '../../../../infrastructure/helpers/typeorm/typeorm-helper';
 import { PaginationInputModel } from '../../../../infrastructure/pagination/models/input/pagination.input.model';
 import { PaginationOutputModel } from '../../../../infrastructure/pagination/models/output/pagination.output.model';
