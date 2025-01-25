@@ -14,6 +14,8 @@ import { PaginationInputModel } from '../../../infrastructure/pagination/models/
 import { TypeOrmHelper } from '../../../infrastructure/helpers/typeorm/typeorm-helper';
 import { UserStatisticOutputModel } from '../api/models/output/user-statistic.output.model';
 import { PlayerGameResult, PlayerProgress } from '../domain/PlayerGameProgress';
+import { TopGamePlayerOutputModel } from '../api/models/output/top-game-player.output.model';
+import { User } from '../../users/api/domain/User';
 
 @Injectable()
 export class QuizGameQueryRepository {
@@ -138,5 +140,69 @@ export class QuizGameQueryRepository {
     );
 
     return new PaginationOutputModel(viewModelGames, total, pagination);
+  }
+
+  async findTopUsersStatistic(
+    pagination: PaginationInputModel,
+  ): Promise<PaginationOutputModel<TopGamePlayerOutputModel>> {
+    const totalUniquePlayersWithGamesResponse =
+      await PlayerProgress.createQueryBuilder('playerProgress')
+        .leftJoin('playerProgress.playerAccount', 'playerAccount')
+        .select('COUNT(DISTINCT playerAccount.id)', 'total')
+        .getRawOne();
+
+    const topPlayers = await PlayerProgress.createQueryBuilder('playerProgress')
+      .select('playerAccount.id', 'playerId')
+      .addSelect('playerAccount.username', 'username')
+      .addSelect('COUNT(DISTINCT playerProgress.id)', 'gamesCount')
+      .addSelect(
+        `SUM(CASE WHEN playerProgress.gameResult = :win THEN 1 ELSE 0 END)`,
+        'winsCount',
+      )
+      .addSelect(
+        `SUM(CASE WHEN playerProgress.gameResult = :loss THEN 1 ELSE 0 END)`,
+        'lossesCount',
+      )
+      .addSelect(
+        `SUM(CASE WHEN playerProgress.gameResult = :draw THEN 1 ELSE 0 END)`,
+        'drawsCount',
+      )
+      .addSelect('SUM(playerProgress.points)', 'sumScore')
+      .addSelect(
+        'ROUND(SUM(playerProgress.points) / COUNT(DISTINCT playerProgress.id), 2)',
+        'avgScores',
+      )
+      .leftJoin('playerProgress.playerAccount', 'playerAccount')
+      .groupBy('playerAccount.id')
+      .orderBy(
+        'ROUND(SUM(playerProgress.points) / COUNT(DISTINCT playerProgress.id), 2)',
+        'DESC',
+      )
+      .setParameters({
+        win: PlayerGameResult.Win,
+        loss: PlayerGameResult.Loose,
+        draw: PlayerGameResult.Draw,
+      })
+      .getRawMany();
+
+    const topUsersViewModel: TopGamePlayerOutputModel[] = topPlayers.map(
+      (p) => {
+        return {
+          gamesCount: p.gamesCount,
+          winsCount: p.winsCount,
+          lossesCount: p.lossesCount,
+          drawsCount: p.drawsCount,
+          sumScore: p.sumScore,
+          avgScores: p.avgScores,
+          player: { id: p.playerId, username: p.username },
+        };
+      },
+    );
+
+    return new PaginationOutputModel(
+      topUsersViewModel,
+      totalUniquePlayersWithGamesResponse.total,
+      pagination,
+    );
   }
 }

@@ -36,10 +36,9 @@ import { ApiPaginatedResponse } from '../../../infrastructure/pagination/decorat
 import { PaginationOutputModel } from '../../../infrastructure/pagination/models/output/pagination.output.model';
 import { PaginationInputModel } from '../../../infrastructure/pagination/models/input/pagination.input.model';
 import { UserStatisticOutputModel } from './models/output/user-statistic.output.model';
+import { TopGamePlayerOutputModel } from './models/output/top-game-player.output.model';
 
-@ApiDefaultUnauthorizedResponse()
 @ApiTags('Quiz Pair Game')
-@UseGuards(UserAuthGuard)
 @Controller('pair-game-quiz')
 export class QuizPairGameController {
   constructor(
@@ -48,6 +47,8 @@ export class QuizPairGameController {
   ) {}
 
   @Get('pairs/my-current')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiDefaultNotFoundResponse()
   @ApiOkResponse({ type: GameOutputModel })
   async getCurrentGame(
@@ -62,6 +63,8 @@ export class QuizPairGameController {
   }
 
   @Post('pairs/connection')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiOkResponse({ type: GameOutputModel })
   @ApiNotFoundResponse({ description: 'The list of questions is empty' })
   @ApiForbiddenResponse({
@@ -80,6 +83,8 @@ export class QuizPairGameController {
   }
 
   @Get('pairs/my')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiPaginatedResponse(GameOutputModel)
   async getUserGames(
     @UserTokenInfo('userId') userId: string,
@@ -92,6 +97,8 @@ export class QuizPairGameController {
   }
 
   @Get('pairs/:gameId')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiOkResponse({ type: GameOutputModel })
   @ApiNotFoundResponse({ description: 'No game by id' })
   @ApiBadRequestResponse({ description: 'Bad uuid for questionId' })
@@ -117,6 +124,8 @@ export class QuizPairGameController {
   }
 
   @Post('pairs/my-current/answers')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiOkResponse({ type: GameAnswerOutputModel })
   @ApiForbiddenResponse({
     description: 'No active game or next question',
@@ -139,10 +148,22 @@ export class QuizPairGameController {
   }
 
   @Get('pairs/users/my-statistic')
+  @UseGuards(UserAuthGuard)
+  @ApiDefaultUnauthorizedResponse()
   @ApiOkResponse({ type: UserStatisticOutputModel })
   async getUserStatistic(
     @UserTokenInfo('userId') userId: string,
   ): Promise<UserStatisticOutputModel> {
     return this.quizGameQueryRepository.findUserStatisticByUserId(userId);
+  }
+
+  @Get('users/top')
+  @ApiPaginatedResponse(TopGamePlayerOutputModel)
+  async getTopUsersStatistic(
+    @Query() paginationInputModel: PaginationInputModel,
+  ): Promise<PaginationOutputModel<TopGamePlayerOutputModel>> {
+    return await this.quizGameQueryRepository.findTopUsersStatistic(
+      paginationInputModel,
+    );
   }
 }
