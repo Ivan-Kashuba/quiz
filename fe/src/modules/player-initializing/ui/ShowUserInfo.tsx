@@ -26,7 +26,7 @@ export const ShowUserInfo = () => {
   };
 
   const onContinue = () => {
-    navigate('/waiting-room');
+    navigate('/connecting-room');
     setFirstTime(false);
   };
 

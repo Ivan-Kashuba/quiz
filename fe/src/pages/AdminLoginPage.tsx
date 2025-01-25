@@ -22,7 +22,7 @@ interface LoginForm {
   password: string;
 }
 
-export const LoginPage = () => {
+export const AdminLoginPage = () => {
   const {
     register,
     handleSubmit,

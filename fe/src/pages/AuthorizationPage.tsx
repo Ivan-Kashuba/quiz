@@ -35,7 +35,7 @@ export const AuthorizationPage = () => {
       setFirstTime(false);
 
       toast({ title: `Welcome back ${data.username} !` });
-      navigate('/waiting-room');
+      navigate('/connecting-room');
     } catch (err: any) {
       if (err.response.data.statusCode === 401) {
         toast({

@@ -22,7 +22,7 @@ export const UsersList = () => {
   return (
     <List
       exporter={questionsExporter}
-      sort={{ field: 'createdAt', order: 'ASC' }}
+      sort={{ field: 'createdAt', order: 'DESC' }}
       filters={filters}
     >
       {isSmall ? (

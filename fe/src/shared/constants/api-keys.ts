@@ -1,0 +1,4 @@
+export enum ApiKeys {
+  TOP_PLAYERS = 'TOP_PLAYERS',
+  USER_GAMES_STATISTIC = 'USER_GAMES_STATISTIC',
+}

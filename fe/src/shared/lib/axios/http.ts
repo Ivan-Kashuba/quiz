@@ -12,9 +12,18 @@ export const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(LocalStorageKey.accessToken);
+    const playerCode = JSON.parse(
+      localStorage.getItem(LocalStorageKey.currentPlayer) || '{}'
+    )?.code;
 
-    if (token) {
+    const isAdminRoute = config?.url?.includes('sa');
+
+    if (token && isAdminRoute) {
       config.headers['Authorization'] = `Basic ${token}`;
+    }
+
+    if (playerCode && !isAdminRoute) {
+      config.headers['Authorization'] = playerCode;
     }
 
     return config;
@@ -41,7 +50,7 @@ http.interceptors.response.use(
       }
 
       if (!isUserLoginRequest && isUserPage) {
-        window.location.href = '/authorize';
+        // window.location.href = '/authorize';
       }
     }
 

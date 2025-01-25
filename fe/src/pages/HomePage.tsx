@@ -6,7 +6,7 @@ import { CreateUsernameForm } from '@/modules/player-initializing/ui/CreateUsern
 export const HomePage = () => {
   const { currentPlayer, isFirstTime } = usePlayerConsumer();
 
-  if (currentPlayer && !isFirstTime) return <Navigate to="/waiting-room" />;
+  if (currentPlayer && !isFirstTime) return <Navigate to="/connecting-room" />;
 
   return (
     <div className="flex flex-col w-screen h-screen items-center justify-center">

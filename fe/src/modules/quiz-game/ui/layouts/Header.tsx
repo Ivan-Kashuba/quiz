@@ -12,12 +12,12 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex items-center bg-neutral-500 text-white justify-between w-full py-2 px-4">
+    <header className="flex items-center bg-primary text-white justify-between w-full py-2 px-4">
       <h2 className="text-2xl">
         You are playing as <b>{currentPlayer?.username}</b>
       </h2>
-      <Button size="default" onClick={onChangeUserName}>
-        Change username
+      <Button size="default" variant="secondary" onClick={onChangeUserName}>
+        Change account
       </Button>
     </header>
   );
