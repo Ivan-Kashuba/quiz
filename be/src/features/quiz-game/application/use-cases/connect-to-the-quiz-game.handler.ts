@@ -3,7 +3,7 @@ import { IsNotEmpty, validateOrReject } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Trim } from '../../../../infrastructure/decorators/transform/trim';
 
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { QuizGame } from '../../domain/QuizGame';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PlayerProgress } from '../../domain/PlayerGameProgress';
@@ -46,7 +46,11 @@ export class ConnectToQuizHandler
     }
 
     const currentlyAwaitingConnectionGame = await QuizGame.findOne({
-      where: { isActive: true, pairCreatedDate: null },
+      where: {
+        isActive: true,
+        pairCreatedDate: IsNull(),
+        finishGameDate: IsNull(),
+      },
       relations: { playersProgress: true },
     });
 
@@ -71,6 +75,7 @@ export class ConnectToQuizHandler
     }
 
     if (!currentlyAwaitingConnectionGame) {
+      console.log('NO GAME');
       let newGameId = null;
       await this.dataSource.transaction(async (entityManager) => {
         const randomQuestionsForQuiz = await entityManager
@@ -87,20 +92,22 @@ export class ConnectToQuizHandler
           throw new NotFoundException('There is no questions in the list');
         }
 
+        const newGame = QuizGame.create({
+          playersProgress: [],
+        });
+        await entityManager.save(newGame);
+
         const gameQuestions = randomQuestionsForQuiz.map((q) => {
           return GameQuestion.create({
             body: q.body,
             questionId: q.id,
+            quizGame: newGame,
           });
         });
 
         await entityManager.save(gameQuestions);
 
-        const newGame = QuizGame.create({
-          gameQuestions,
-          playersProgress: [],
-        });
-
+        newGame.gameQuestions = gameQuestions;
         await entityManager.save(newGame);
 
         newGameId = newGame.id;

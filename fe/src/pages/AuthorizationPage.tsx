@@ -80,6 +80,17 @@ export const AuthorizationPage = () => {
           placeholder="Code"
         />
         <FormError errors={errors} name={'code'} />
+
+        <Button
+          type="button"
+          size="sm"
+          variant="link"
+          className="flex ml-auto"
+          onClick={() => navigate('/')}
+        >
+          Don't have account ?
+        </Button>
+
         <Button className="mt-6 w-full" disabled={isSubmitting} type="submit">
           Next
         </Button>

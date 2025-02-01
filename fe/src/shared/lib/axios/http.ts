@@ -50,7 +50,7 @@ http.interceptors.response.use(
       }
 
       if (!isUserLoginRequest && isUserPage) {
-        // window.location.href = '/authorize';
+        window.location.href = '/authorize';
       }
     }
 

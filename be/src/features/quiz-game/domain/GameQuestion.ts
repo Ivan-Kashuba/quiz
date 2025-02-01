@@ -12,7 +12,7 @@ export class GameQuestion extends AbstractBaseEntity {
   @OneToOne(() => GameAnswer, (gameAnswers) => gameAnswers.gameQuestion)
   gameAnswers: GameAnswer[];
 
-  @OneToOne(() => Question, (question) => question.gameQuestion)
+  @ManyToOne(() => Question, (question) => question.gameQuestion)
   @JoinColumn()
   question: Question;
 

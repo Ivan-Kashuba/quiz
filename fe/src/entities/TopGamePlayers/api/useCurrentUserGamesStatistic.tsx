@@ -11,6 +11,6 @@ export const useCurrentUserGamesStatistic = () => {
         .get<PlayerGamesStatistic>(`pair-game-quiz/pairs/users/my-statistic`)
         .then((res) => res.data);
     },
-    retry: false,
+    retry: 2,
   });
 };

@@ -57,7 +57,7 @@ export const CurrentUserGamesStatistic = () => {
   ];
 
   return (
-    <Card>
+    <Card className="w-[400px]">
       <CardHeader>
         <CardTitle>Your statistic</CardTitle>
       </CardHeader>
@@ -65,9 +65,9 @@ export const CurrentUserGamesStatistic = () => {
         {isLoading ? (
           <Skeleton className="w-full h-28" />
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {statisticItemsArray.map((si) => (
-              <StatisticItem {...si} />
+              <StatisticItem {...si} key={si.title} />
             ))}
           </div>
         )}

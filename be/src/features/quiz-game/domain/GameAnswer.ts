@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { GameQuestion } from './GameQuestion';
 import { AbstractBaseEntity } from '../../../infrastructure/base/base.entity';
 import { PlayerProgress } from './PlayerGameProgress';

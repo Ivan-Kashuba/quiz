@@ -15,7 +15,6 @@ import { TypeOrmHelper } from '../../../infrastructure/helpers/typeorm/typeorm-h
 import { UserStatisticOutputModel } from '../api/models/output/user-statistic.output.model';
 import { PlayerGameResult, PlayerProgress } from '../domain/PlayerGameProgress';
 import { TopGamePlayerOutputModel } from '../api/models/output/top-game-player.output.model';
-import { User } from '../../users/api/domain/User';
 
 @Injectable()
 export class QuizGameQueryRepository {
@@ -33,7 +32,7 @@ export class QuizGameQueryRepository {
       .andWhere('quizGame.finishGameDate IS NULL')
       .getOne();
 
-    return GameOutputModelMapper(currentGame);
+    return currentGame ? GameOutputModelMapper(currentGame) : null;
   }
 
   async findQuizGameById(quizGameId: string): Promise<GameOutputModel | null> {
@@ -145,6 +144,7 @@ export class QuizGameQueryRepository {
   async findTopUsersStatistic(
     pagination: PaginationInputModel,
   ): Promise<PaginationOutputModel<TopGamePlayerOutputModel>> {
+    const { limit, skip } = pagination;
     const totalUniquePlayersWithGamesResponse =
       await PlayerProgress.createQueryBuilder('playerProgress')
         .leftJoin('playerProgress.playerAccount', 'playerAccount')
@@ -183,6 +183,8 @@ export class QuizGameQueryRepository {
         loss: PlayerGameResult.Loose,
         draw: PlayerGameResult.Draw,
       })
+      .limit(limit)
+      .offset(skip)
       .getRawMany();
 
     const topUsersViewModel: TopGamePlayerOutputModel[] = topPlayers.map(

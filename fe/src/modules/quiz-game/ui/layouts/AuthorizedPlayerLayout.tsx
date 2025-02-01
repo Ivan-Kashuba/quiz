@@ -9,7 +9,9 @@ export const AuthorizedPlayerLayout = ({
   return (
     <>
       <Header />
-      {children}
+      <div className="bg-layout-secondary h-[calc(100vh-theme(height.header))] p-6">
+        {children}
+      </div>
     </>
   );
 };
