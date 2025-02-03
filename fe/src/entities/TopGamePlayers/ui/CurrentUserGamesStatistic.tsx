@@ -57,7 +57,7 @@ export const CurrentUserGamesStatistic = () => {
   ];
 
   return (
-    <Card className="w-[400px]">
+    <Card>
       <CardHeader>
         <CardTitle>Your statistic</CardTitle>
       </CardHeader>

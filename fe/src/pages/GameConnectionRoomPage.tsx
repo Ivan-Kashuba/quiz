@@ -15,11 +15,11 @@ export const GameConnectionRoomPage = () => {
 
   return (
     <div className="p-5">
-      <div className="flex gap-10 flex-wrap">
-        <TopGamePlayersCard />
+      <div className="w-full flex gap-10 flex-wrap justify-center">
+        <div className="flex flex-col gap-6">
+          <CurrentUserGamesStatistic />
 
-        <div className="flex-1 flex m-auto">
-          <div className="m-auto flex flex-col items-center">
+          <div className="w-full flex flex-col items-center">
             {isLoading && <Skeleton className="w-full h-32" />}
             {!isLoading && currentGame && (
               <ConnectionToExistingGame currentGameId={currentGame.id} />
@@ -27,7 +27,10 @@ export const GameConnectionRoomPage = () => {
             {!isLoading && !currentGame && <ConnectionToTheNewGame />}
           </div>
         </div>
-        <CurrentUserGamesStatistic />
+
+        <div className="flex-1">
+          <TopGamePlayersCard />
+        </div>
       </div>
     </div>
   );

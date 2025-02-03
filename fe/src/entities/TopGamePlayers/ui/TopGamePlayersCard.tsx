@@ -9,7 +9,7 @@ export const TopGamePlayersCard = () => {
   const { data: topPlayers, isLoading } = useTopPlayers();
 
   return (
-    <Card className="w-[400px]">
+    <Card>
       <CardHeader>
         <CardTitle>Top players</CardTitle>
       </CardHeader>
@@ -28,7 +28,7 @@ export const TopGamePlayersCard = () => {
             <TableBody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  <TableCell colSpan={4}>
+                  <TableCell colSpan={5}>
                     <Skeleton className="w-full h-6" />
                   </TableCell>
                 </TableRow>

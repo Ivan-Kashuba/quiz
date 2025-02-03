@@ -14,8 +14,8 @@ export const ConnectionToExistingGame = ({
 
   return (
     <>
-      <h1 className="scroll-m-20 text-center text-4xl mb-8 font-extrabold tracking-tight lg:text-5xl">
-        Reconnect to the current game
+      <h1 className="scroll-m-20 text-center mb-8 font-extrabold tracking-tight text-3xl">
+        You have ongoing game to finish
       </h1>
       <div>
         <Button variant="destructive" onClick={onNavigateToExistingGame}>

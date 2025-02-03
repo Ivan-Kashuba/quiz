@@ -9,7 +9,9 @@ export const useTopPlayers = () => {
     queryKey: [ApiKeys.TOP_PLAYERS],
     queryFn: async () => {
       return http
-        .get<WithPagination<TopGameUserStatistic>>(`pair-game-quiz/users/top`)
+        .get<
+          WithPagination<TopGameUserStatistic>
+        >(`pair-game-quiz/users/top?limit=10`)
         .then((res) => res.data);
     },
     refetchOnMount: false,
