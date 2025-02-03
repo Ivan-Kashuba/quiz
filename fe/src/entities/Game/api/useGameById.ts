@@ -5,12 +5,13 @@ import { TGame } from '@/entities/Game/types/game.ts';
 
 export const useGameById = (gameId: string) => {
   return useQuery({
-    queryKey: [ApiKeys.GAME],
+    queryKey: [ApiKeys.GAME, gameId],
     queryFn: async () => {
       return http
         .get<TGame>(`pair-game-quiz/pairs/${gameId}`)
         .then((res) => res.data);
     },
     retry: false,
+    refetchInterval: 2000,
   });
 };

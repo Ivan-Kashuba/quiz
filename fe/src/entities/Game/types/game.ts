@@ -39,5 +39,5 @@ export enum AnswerStatus {
 export enum GameStatus {
   PendingSecondPlayer = 'PendingSecondPlayer',
   Active = 'Active',
-  Finished = 'Finished ',
+  Finished = 'Finished',
 }
