@@ -110,7 +110,9 @@ export class AnswerNextQuizQuestionHandler
 
       answerId = newAnswer.id;
 
-      const gameAnswers = await entityManager.getRepository(GameAnswer).find();
+      const gameAnswers = await entityManager
+        .getRepository(GameAnswer)
+        .find({ where: { playerProgress: { gameId: currentGame.id } } });
 
       if (gameAnswers.length === 10) {
         const game = await entityManager.getRepository(QuizGame).findOne({

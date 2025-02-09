@@ -13,3 +13,10 @@ export type PlayerGamesStatistic = {
   lossesCount: number;
   drawsCount: number;
 };
+
+export enum PlayerGameResult {
+  Loose = 0,
+  Win = 1,
+  Draw = 2,
+  Unfinished = 3,
+}

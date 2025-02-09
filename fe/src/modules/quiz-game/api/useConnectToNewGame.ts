@@ -1,12 +1,11 @@
-import { Button } from '@/ui/button.tsx';
-import { http } from '@/shared/lib/axios/http.ts';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/shared/hooks/shadcn/use-toast.ts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { http } from '@/shared/lib/axios/http.ts';
 import { TGame } from '@/entities/Game/types/game.ts';
 import { ApiKeys } from '@/shared/constants/api-keys.ts';
-import { useToast } from '@/shared/hooks/shadcn/use-toast.ts';
-import { useNavigate } from 'react-router-dom';
 
-const useConnectToNewGame = () => {
+export const useConnectToNewGame = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -30,21 +29,4 @@ const useConnectToNewGame = () => {
       });
     },
   });
-};
-
-export const ConnectionToTheNewGame = () => {
-  const { mutate: connectToNewGame, isPending } = useConnectToNewGame();
-
-  return (
-    <>
-      <h1 className="scroll-m-20 text-center text-4xl mb-8 font-extrabold tracking-tight lg:text-5xl">
-        Start a new game
-      </h1>
-      <div>
-        <Button disabled={isPending} onClick={() => connectToNewGame()}>
-          {isPending ? 'Connecting...' : 'Connect to New Game'}
-        </Button>
-      </div>
-    </>
-  );
 };

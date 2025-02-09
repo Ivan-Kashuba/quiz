@@ -169,13 +169,13 @@ export class QuizGameQueryRepository {
       )
       .addSelect('SUM(playerProgress.points)', 'sumScore')
       .addSelect(
-        'ROUND(SUM(playerProgress.points) / COUNT(DISTINCT playerProgress.id), 2)',
+        'CAST(SUM(playerProgress.points) AS FLOAT) / COUNT(DISTINCT playerProgress.id)',
         'avgScores',
       )
       .leftJoin('playerProgress.playerAccount', 'playerAccount')
       .groupBy('playerAccount.id')
       .orderBy(
-        'ROUND(SUM(playerProgress.points) / COUNT(DISTINCT playerProgress.id), 2)',
+        'CAST(SUM(playerProgress.points) AS FLOAT) / COUNT(DISTINCT playerProgress.id)',
         'DESC',
       )
       .setParameters({

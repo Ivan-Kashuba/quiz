@@ -2,10 +2,9 @@ import { usePlayerConsumer } from '@/app/providers/PlayerProvider/PlayerProvider
 import { Navigate } from 'react-router-dom';
 import { TopGamePlayersCard } from '@/entities/TopGamePlayers/ui/TopGamePlayersCard.tsx';
 import { CurrentUserGamesStatistic } from '@/entities/TopGamePlayers/ui/CurrentUserGamesStatistic.tsx';
-import { ConnectionToTheNewGame } from '@/modules/quiz-game/ui/ConnectionToTheNewGame.tsx';
 import { useCurrentGame } from '@/entities/Game/api/useCurrentGame.ts';
-import { Skeleton } from '@/ui/skeleton.tsx';
-import { ConnectionToExistingGame } from '@/modules/quiz-game/ui/ConnectionToExistingGame.tsx';
+import { ConnectToTheGameButton } from '@/modules/quiz-game/ui/ConnectToTheGameButton.tsx';
+import { PlayerRecentGames } from '@/modules/quiz-game/ui/PlayerRecentGames/PlayerRecentGames.tsx';
 
 export const GameConnectionRoomPage = () => {
   const { currentPlayer } = usePlayerConsumer();
@@ -16,20 +15,20 @@ export const GameConnectionRoomPage = () => {
   return (
     <div className="p-5">
       <div className="w-full flex gap-10 flex-wrap justify-center">
-        <div className="flex flex-col gap-6">
+        <div className="flex-1 order-2 lg:order-1 flex flex-col gap-6">
+          <PlayerRecentGames />
+          <TopGamePlayersCard />
+        </div>
+
+        <div className="flex flex-col gap-6 order-1 lg:order-2">
           <CurrentUserGamesStatistic />
 
           <div className="w-full flex flex-col items-center">
-            {isLoading && <Skeleton className="w-full h-32" />}
-            {!isLoading && currentGame && (
-              <ConnectionToExistingGame currentGameId={currentGame.id} />
-            )}
-            {!isLoading && !currentGame && <ConnectionToTheNewGame />}
+            <ConnectToTheGameButton
+              gameId={currentGame?.id}
+              isLoading={isLoading}
+            />
           </div>
-        </div>
-
-        <div className="flex-1">
-          <TopGamePlayersCard />
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { PlayerGameResult } from '@/entities/TopGamePlayers/types/player.ts';
+
 export type TGame = {
   id: string;
   firstPlayerProgress: TPlayerProgress;
@@ -13,6 +15,7 @@ export type TPlayerProgress = {
   answers: GameAnswer[];
   player: TGameUser;
   score: number;
+  gameResult: PlayerGameResult;
 };
 
 export type GameAnswer = {

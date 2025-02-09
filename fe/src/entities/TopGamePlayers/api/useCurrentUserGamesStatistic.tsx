@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ApiKeys } from '@/shared/constants/api-keys.ts';
 import { http } from '@/shared/lib/axios/http.ts';
-import { PlayerGamesStatistic } from '@/entities/TopGamePlayers/types/top-game-player.ts';
+import { PlayerGamesStatistic } from '@/entities/TopGamePlayers/types/player.ts';
 
 export const useCurrentUserGamesStatistic = () => {
   return useQuery({

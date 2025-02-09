@@ -4,7 +4,10 @@ import {
   mapGameAnswerOutputModel,
 } from './game-answer.output.model';
 import { ApiProperty } from '@nestjs/swagger';
-import { PlayerProgress } from '../../../domain/PlayerGameProgress';
+import {
+  PlayerGameResult,
+  PlayerProgress,
+} from '../../../domain/PlayerGameProgress';
 
 export class PlayerProgressOutputModel {
   @ApiProperty()
@@ -13,6 +16,8 @@ export class PlayerProgressOutputModel {
   player: PlayerOutputModel;
   @ApiProperty()
   score: number;
+  @ApiProperty()
+  gameResult: PlayerGameResult;
 }
 
 export const PlayerProgressOutputModelMapper = (
@@ -28,5 +33,6 @@ export const PlayerProgressOutputModelMapper = (
     answers: dbPlayerProgress.gameAnswers.map(mapGameAnswerOutputModel),
     score: dbPlayerProgress.gameAnswers.filter((answer) => answer.isCorrect)
       .length,
+    gameResult: dbPlayerProgress.gameResult,
   };
 };
