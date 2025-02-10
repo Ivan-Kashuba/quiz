@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiTags,
@@ -10,11 +16,15 @@ import {
   envConfig,
   EnvVariables,
 } from '../../../infrastructure/config/env-config';
+import { AuthService } from '../application/auth.service';
+import { UserOutputModelMapper } from '../../users/api/models/output/user.output.model';
 
 @ApiTags('Auth')
-@Controller('sa/auth')
+@Controller('')
 export class AuthController {
-  @Post('login')
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('sa/auth/login')
   @ApiOkResponse({
     type: LoginOutputModel,
     description: 'Logged in successfully',
@@ -32,5 +42,14 @@ export class AuthController {
     }
 
     return { accessToken: token };
+  }
+
+  @Post('auth/google')
+  async googleAuth(@Body('token') token: string) {
+    if (!token) throw new BadRequestException('Token is required');
+
+    const user = await this.authService.authenticateGoogleUser(token);
+
+    return UserOutputModelMapper(user);
   }
 }

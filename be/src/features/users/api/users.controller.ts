@@ -40,12 +40,14 @@ import { DataSource, In } from 'typeorm';
 import { getAndValidateIds } from '../../../infrastructure/helpers/delete-entities/delete-entities';
 import { ApiDefaultUnauthorizedResponse } from '../../../infrastructure/decorators/swagger/default-responses';
 import { CheckUserInputModel } from './models/input/check-user.input.model';
+import { UsersRepository } from './infrastructure/users.repository';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(
     private usersQueryRepository: UsersQueryRepository,
+    private usersRepository: UsersRepository,
     private dataSource: DataSource,
   ) {}
 
@@ -69,7 +71,7 @@ export class UsersController {
   ): Promise<PaginationOutputModel<UserOutputModel>> {
     const usernameSearchTerm = queryParams?.usernameSearchTerm || null;
 
-    return await this.usersQueryRepository.findQuestions(
+    return await this.usersQueryRepository.findUsers(
       usernameSearchTerm,
       paginationInputModel,
     );
@@ -93,12 +95,7 @@ export class UsersController {
       throw new ConflictException();
     }
 
-    const user = User.create({
-      username: userInputModel.username,
-      code: uuidv4(),
-    });
-
-    await user.save();
+    const user = await this.usersRepository.createUser(userInputModel.username);
 
     return UserOutputModelMapper(user);
   }

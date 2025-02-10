@@ -129,6 +129,7 @@ export class QuizGameQueryRepository {
       .leftJoinAndSelect('playersProgress.gameAnswers', 'gameAnswers')
       .leftJoinAndSelect('gameAnswers.gameQuestion', 'gameQuestion')
       .where('quizGame.isActive = :isActive', { isActive: true })
+      .andWhere('playersProgress.id = :userId', { userId })
       .orderBy(`quizGame.${validatedOrderBy || 'createdAt'}`, order)
       .take(limit)
       .skip(skip)

@@ -15,6 +15,7 @@ export enum EnvVariables {
   EMAIL_SENDER_PASSWORD = 'EMAIL_SENDER_PASSWORD',
   FRONT_END_URL = 'FRONT_END_URL',
   ADMIN_AUTH_HEADER = 'ADMIN_AUTH_HEADER',
+  GOOGLE_CLIENT_ID = 'GOOGLE_CLIENT_ID',
 }
 
 export const envConfig = {
@@ -35,6 +36,7 @@ export const envConfig = {
     process.env.FRONT_END_URL || 'https://some-front.com',
   [EnvVariables.ADMIN_AUTH_HEADER]:
     process.env.ADMIN_AUTH_HEADER || 'Basic YWRtaW46cXdlcnR5',
+  [EnvVariables.GOOGLE_CLIENT_ID]: process.env.GOOGLE_CLIENT_ID,
 };
 
 export default () => envConfig;

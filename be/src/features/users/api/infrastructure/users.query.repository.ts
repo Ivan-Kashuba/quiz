@@ -12,7 +12,7 @@ import { User } from '../domain/User';
 export class UsersQueryRepository {
   constructor(private readonly typeOrmHelper: TypeOrmHelper) {}
 
-  async findQuestions(
+  async findUsers(
     usernameSearchTerm: string | null,
     pagination: PaginationInputModel,
   ): Promise<PaginationOutputModel<UserOutputModel>> {
