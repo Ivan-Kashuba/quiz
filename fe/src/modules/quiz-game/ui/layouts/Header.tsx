@@ -1,12 +1,15 @@
 import { Button } from '@/ui/button.tsx';
 import { usePlayerConsumer } from '@/app/providers/PlayerProvider/PlayerProvider.tsx';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const Header = () => {
   const { currentPlayer, setCurrentPlayer } = usePlayerConsumer();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const onChangeUserName = () => {
+  const onChangeUserName = async () => {
+    queryClient.removeQueries();
     setCurrentPlayer(null);
     navigate('/');
   };
