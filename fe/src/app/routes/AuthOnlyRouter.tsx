@@ -2,7 +2,7 @@ import { LocalStorageKey } from '@/shared/lib/localstorage';
 import { ReactNode } from 'react';
 
 export const AuthOnlyRoute = ({ children }: { children: ReactNode }) => {
-  const isAuth = !!localStorage.getItem(LocalStorageKey.accessToken);
+  const isAuth = !!localStorage.getItem(LocalStorageKey.adminAccessToken);
 
   if (!isAuth) {
     return children;

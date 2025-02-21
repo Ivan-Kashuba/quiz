@@ -12,6 +12,8 @@ import { RecentGameRow } from '@/modules/quiz-game/ui/PlayerRecentGames/RecentGa
 export const PlayerRecentGames = () => {
   const { data: games } = useRecentGames();
 
+  if (!games?.length) return null;
+
   return (
     <Card>
       <CardHeader>

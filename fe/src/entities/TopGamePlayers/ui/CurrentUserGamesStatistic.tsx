@@ -63,7 +63,7 @@ export const CurrentUserGamesStatistic = () => {
       </CardHeader>
       <CardContent className="flex flex-wrap items-center gap-4">
         {isLoading ? (
-          <Skeleton className="w-full h-28" />
+          <Skeleton className=" min-w-[400px] w-full h-28" />
         ) : (
           <div className="grid grid-cols-3 gap-4">
             {statisticItemsArray.map((si) => (

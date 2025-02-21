@@ -122,14 +122,20 @@ export class QuizGameQueryRepository {
       pagination.orderBy,
     );
 
+    const currentPlayerQuery = QuizGame.createQueryBuilder('quizGame')
+      .leftJoin('quizGame.playersProgress', 'playersProgress')
+      .leftJoin('playersProgress.playerAccount', 'playerAccount')
+      .where('playerAccount.id = :userId', { userId })
+      .select('quizGame.id');
+
     const [dbGames, total] = await QuizGame.createQueryBuilder('quizGame')
       .leftJoinAndSelect('quizGame.gameQuestions', 'gameQuestions')
       .leftJoinAndSelect('quizGame.playersProgress', 'playersProgress')
       .leftJoinAndSelect('playersProgress.playerAccount', 'playerAccount')
       .leftJoinAndSelect('playersProgress.gameAnswers', 'gameAnswers')
       .leftJoinAndSelect('gameAnswers.gameQuestion', 'gameQuestion')
-      .where('quizGame.isActive = :isActive', { isActive: true })
-      .andWhere('playersProgress.id = :userId', { userId })
+      .where('quizGame.id IN (' + currentPlayerQuery.getQuery() + ')')
+      .setParameters(currentPlayerQuery.getParameters())
       .orderBy(`quizGame.${validatedOrderBy || 'createdAt'}`, order)
       .take(limit)
       .skip(skip)
@@ -196,7 +202,7 @@ export class QuizGameQueryRepository {
           lossesCount: p.lossesCount,
           drawsCount: p.drawsCount,
           sumScore: p.sumScore,
-          avgScores: p.avgScores,
+          avgScores: +p.avgScores.toFixed(2),
           player: { id: p.playerId, username: p.username },
         };
       },

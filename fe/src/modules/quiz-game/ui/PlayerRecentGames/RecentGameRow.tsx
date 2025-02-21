@@ -18,12 +18,14 @@ export const RecentGameRow = ({ game }: { game: TGame }) => {
 
   return (
     <TableRow className="cursor-pointer" onClick={onNavigateToTheGame}>
-      <TableCell>{opponent.player.username}</TableCell>
+      <TableCell>
+        {opponent?.player?.username || 'Awaiting opponent...'}
+      </TableCell>
       <TableCell>
         <GameResultStatusLabel gameResult={player.gameResult} />
       </TableCell>
       <TableCell>
-        {player.score} - {opponent.score}
+        {player.score} - {opponent?.score || 0}
       </TableCell>
       <TableCell>
         {game.finishGameDate ? getViewDateTime(game.finishGameDate) : '-'}

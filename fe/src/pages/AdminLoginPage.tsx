@@ -37,7 +37,7 @@ export const AdminLoginPage = () => {
     try {
       const { data } = await http.post('sa/auth/login', { username, password });
 
-      localStorage.setItem(LocalStorageKey.accessToken, data.accessToken);
+      localStorage.setItem(LocalStorageKey.adminAccessToken, data.accessToken);
       navigate('/admin');
     } catch {
       toast({

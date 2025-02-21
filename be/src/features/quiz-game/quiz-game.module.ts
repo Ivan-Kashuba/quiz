@@ -8,7 +8,7 @@ import { PlayerProgress } from './domain/PlayerGameProgress';
 import { QuizGame } from './domain/QuizGame';
 import { QuizGameQueryRepository } from './infrastructure/quiz-game.query.repository';
 import { AnswerNextQuizQuestionHandler } from './application/use-cases/answer-next-quiz-question.handler';
-import { QuizService } from './application/use-cases/quiz.service';
+import { QuizService } from './application/service/quiz.service';
 
 @Module({
   imports: [

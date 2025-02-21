@@ -11,14 +11,14 @@ export const authProvider: AuthProvider = {
     });
   },
   async logout() {
-    localStorage.removeItem(LocalStorageKey.accessToken);
+    localStorage.removeItem(LocalStorageKey.adminAccessToken);
     return Promise.resolve();
   },
   async login() {
     return Promise.resolve();
   },
   async checkAuth() {
-    return localStorage.getItem(LocalStorageKey.accessToken)
+    return localStorage.getItem(LocalStorageKey.adminAccessToken)
       ? Promise.resolve()
       : Promise.reject();
   },

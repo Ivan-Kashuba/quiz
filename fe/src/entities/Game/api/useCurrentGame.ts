@@ -11,6 +11,9 @@ export const useCurrentGame = () => {
         .get<TGame>(`pair-game-quiz/pairs/my-current`)
         .then((res) => res.data);
     },
+    staleTime: 0,
+    refetchOnMount: true,
     retry: false,
+    gcTime: 0,
   });
 };

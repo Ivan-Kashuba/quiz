@@ -11,7 +11,7 @@ export const PrivateRoute: FC<PrivateRouteProps> = ({
   children,
   redirectedTo = '/login',
 }) => {
-  const isAuth = !!localStorage.getItem(LocalStorageKey.accessToken);
+  const isAuth = !!localStorage.getItem(LocalStorageKey.adminAccessToken);
 
   return isAuth ? children : <Navigate to={redirectedTo} replace />;
 };

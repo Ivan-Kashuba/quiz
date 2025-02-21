@@ -7,6 +7,7 @@ import { TUser } from '@/entities/User/types/user.ts';
 import { Input } from '@/ui/input.tsx';
 import { FormError } from '@/ui/form-error.tsx';
 import { Button } from '@/ui/button.tsx';
+import { GoogleLoginButton } from '@/modules/auth/google-login/ui/GoogleLoginButton.tsx';
 
 type TInitializeUserForm = {
   username: string;
@@ -59,30 +60,35 @@ export const CreateUsernameForm = () => {
         To start playing create a nickname
       </h2>
 
-      <form onSubmit={handleSubmit(onCreateUser)} className="w-[400px]">
-        <Input
-          id="username"
-          placeholder="Username"
-          {...register('username', {
-            required: 'Username is required',
-            validate: (value) => value.trim() !== '' || 'Username is required',
-          })}
-        />
-        <FormError errors={errors} name={'username'} />
+      <div className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit(onCreateUser)} className="w-[400px]">
+          <Input
+            id="username"
+            placeholder="Username"
+            {...register('username', {
+              required: 'Username is required',
+              validate: (value) =>
+                value.trim() !== '' || 'Username is required',
+            })}
+          />
+          <FormError errors={errors} name={'username'} />
 
-        <Button
-          size="sm"
-          variant="link"
-          className="flex ml-auto"
-          onClick={onAuthorizationNavigate}
-        >
-          Already have an username with code?
-        </Button>
+          <Button
+            size="sm"
+            variant="link"
+            className="flex ml-auto text-white"
+            onClick={onAuthorizationNavigate}
+          >
+            Already have an username with code?
+          </Button>
 
-        <Button className="mt-3 w-full" disabled={isSubmitting} type="submit">
-          Next
-        </Button>
-      </form>
+          <Button className="mt-3 w-full" disabled={isSubmitting} type="submit">
+            Next
+          </Button>
+        </form>
+        <div className="text-center">OR</div>
+        <GoogleLoginButton />
+      </div>
     </div>
   );
 };

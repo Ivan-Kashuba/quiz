@@ -3,12 +3,12 @@ import { IsNotEmpty, validateOrReject } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Trim } from '../../../../infrastructure/decorators/transform/trim';
 
-import { DataSource, Not, Raw } from 'typeorm';
+import { DataSource, IsNull, Not, Raw } from 'typeorm';
 import { QuizGame } from '../../domain/QuizGame';
 import { ForbiddenException } from '@nestjs/common';
 import { PlayerProgress } from '../../domain/PlayerGameProgress';
 import { GameAnswer } from '../../domain/GameAnswer';
-import { QuizService } from './quiz.service';
+import { QuizService } from '../service/quiz.service';
 
 export class AnswerNextQuizQuestionCommand {
   @Trim()
@@ -45,7 +45,7 @@ export class AnswerNextQuizQuestionHandler
         where: {
           isActive: true,
           playersProgress: { isActive: true, playerAccount: { id: userId } },
-          finishGameDate: null,
+          finishGameDate: IsNull(),
           pairCreatedDate: Raw((alias) => `${alias} IS NOT NULL`),
         },
         relations: {

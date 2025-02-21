@@ -11,7 +11,7 @@ export const http = axios.create({
 
 http.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(LocalStorageKey.accessToken);
+    const token = localStorage.getItem(LocalStorageKey.adminAccessToken);
     const playerCode = JSON.parse(
       localStorage.getItem(LocalStorageKey.currentPlayer) || '{}'
     )?.code;
@@ -39,7 +39,7 @@ http.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem(LocalStorageKey.accessToken);
+      localStorage.removeItem(LocalStorageKey.adminAccessToken);
 
       const isAdminLoginRequest = error.config.url.includes('login');
       const isUserLoginRequest = error.config.url.includes('users/check');

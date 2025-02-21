@@ -85,7 +85,7 @@ export const AuthorizationPage = () => {
           type="button"
           size="sm"
           variant="link"
-          className="flex ml-auto"
+          className="flex ml-auto text-white"
           onClick={() => navigate('/')}
         >
           Don't have account ?
