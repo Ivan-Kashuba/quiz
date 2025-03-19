@@ -75,7 +75,6 @@ export class ConnectToQuizHandler
     }
 
     if (!currentlyAwaitingConnectionGame) {
-      console.log('NO GAME');
       let newGameId = null;
       await this.dataSource.transaction(async (entityManager) => {
         const randomQuestionsForQuiz = await entityManager

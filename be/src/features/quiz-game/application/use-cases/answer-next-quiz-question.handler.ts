@@ -54,8 +54,9 @@ export class AnswerNextQuizQuestionHandler
         },
       });
 
-      if (!currentGame)
+      if (!currentGame) {
         throw new ForbiddenException('There is no current game!');
+      }
 
       const userGameProgress = await entityManager
         .getRepository(PlayerProgress)

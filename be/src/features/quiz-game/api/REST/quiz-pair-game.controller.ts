@@ -23,20 +23,21 @@ import {
   ApiDefaultBadRequestResponse,
   ApiDefaultNotFoundResponse,
   ApiDefaultUnauthorizedResponse,
-} from '../../../infrastructure/decorators/swagger/default-responses';
-import { GameOutputModel } from './models/output/game.output.model';
-import { UserAuthGuard } from '../../../infrastructure/guards/user-auth.guard';
-import { ConnectToQuizCommand } from '../application/use-cases/connect-to-the-quiz-game.handler';
-import { UserTokenInfo } from '../../../infrastructure/decorators/transform/user-token-info';
-import { QuizGameQueryRepository } from '../infrastructure/quiz-game.query.repository';
-import { QuestionGameAnswerInputModel } from './models/input/question-answer.input.model';
-import { AnswerNextQuizQuestionCommand } from '../application/use-cases/answer-next-quiz-question.handler';
-import { GameAnswerOutputModel } from './models/output/game-answer.output.model';
-import { ApiPaginatedResponse } from '../../../infrastructure/pagination/decorators/api-paginated-response/ApiPaginatedResponse ';
-import { PaginationOutputModel } from '../../../infrastructure/pagination/models/output/pagination.output.model';
-import { PaginationInputModel } from '../../../infrastructure/pagination/models/input/pagination.input.model';
-import { UserStatisticOutputModel } from './models/output/user-statistic.output.model';
-import { TopGamePlayerOutputModel } from './models/output/top-game-player.output.model';
+} from '../../../../infrastructure/decorators/swagger/default-responses';
+import { GameOutputModel } from '../models/output/game.output.model';
+import { UserAuthGuard } from '../../../../infrastructure/guards/user-auth.guard';
+import { ConnectToQuizCommand } from '../../application/use-cases/connect-to-the-quiz-game.handler';
+import { UserTokenInfo } from '../../../../infrastructure/decorators/transform/user-token-info';
+import { QuizGameQueryRepository } from '../../infrastructure/quiz-game.query.repository';
+import { QuestionGameAnswerInputModel } from '../models/input/question-answer.input.model';
+import { AnswerNextQuizQuestionCommand } from '../../application/use-cases/answer-next-quiz-question.handler';
+import { GameAnswerOutputModel } from '../models/output/game-answer.output.model';
+
+import { PaginationOutputModel } from '../../../../infrastructure/pagination/models/output/pagination.output.model';
+import { PaginationInputModel } from '../../../../infrastructure/pagination/models/input/pagination.input.model';
+import { UserStatisticOutputModel } from '../models/output/user-statistic.output.model';
+import { TopGamePlayerOutputModel } from '../models/output/top-game-player.output.model';
+import { ApiPaginatedResponse } from '../../../../infrastructure/pagination/decorators/api-paginated-response/ApiPaginatedResponse ';
 
 @ApiTags('Quiz Pair Game')
 @Controller('pair-game-quiz')
@@ -73,11 +74,11 @@ export class QuizPairGameController {
   async connectToTheGame(
     @UserTokenInfo('userId') userId: string,
   ): Promise<GameOutputModel> {
-    const createQuizQuestionCommand = new ConnectToQuizCommand({
+    const connectToQuizCommand = new ConnectToQuizCommand({
       userId,
     });
 
-    const gameId = await this.commandBus.execute(createQuizQuestionCommand);
+    const gameId = await this.commandBus.execute(connectToQuizCommand);
 
     return await this.quizGameQueryRepository.findQuizGameById(gameId);
   }
