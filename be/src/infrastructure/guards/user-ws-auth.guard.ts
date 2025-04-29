@@ -15,7 +15,7 @@ export class UserWsAuthGuard implements CanActivate {
   }
 
   static async validateAuth(client: Socket) {
-    const { authorization } = client.handshake.headers;
+    const authorization = client.handshake.auth.token;
 
     if (!authorization) {
       throw new WsException('Not authorized');

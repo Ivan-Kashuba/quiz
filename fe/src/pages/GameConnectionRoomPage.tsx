@@ -5,10 +5,12 @@ import { CurrentUserGamesStatistic } from '@/entities/TopGamePlayers/ui/CurrentU
 import { useCurrentGame } from '@/entities/Game/api/useCurrentGame.ts';
 import { ConnectToTheGameButton } from '@/modules/quiz-game/ui/ConnectToTheGameButton.tsx';
 import { PlayerRecentGames } from '@/modules/quiz-game/ui/PlayerRecentGames/PlayerRecentGames.tsx';
+import { useCurrentGameSocket } from '@/entities/Game/api/useCurrentGameSocket';
 
 export const GameConnectionRoomPage = () => {
   const { currentPlayer } = usePlayerConsumer();
   const { data: currentGame, isLoading } = useCurrentGame();
+  const { isConnected } = useCurrentGameSocket();
 
   if (!currentPlayer) return <Navigate to="/" />;
 
